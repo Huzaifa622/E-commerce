@@ -8,6 +8,7 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
+      issuer: process.env.NEXTAUTH_CLIENT_ISSUER,
     }),
     // ...add more providers here
   ],

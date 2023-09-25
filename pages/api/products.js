@@ -4,8 +4,12 @@ import { Product } from "@/models/Product";
 export default async function handler(req, res) {
   const { method } = req;
   await mongooseConnect();
-  if(method === 'GET'){
-   res.json(await Product.find());
+  if (method === "GET") {
+    if (req.query?.id) {
+      res.json(await Product.findOne({ _id: req.query.id }));
+    } else {
+      res.json(await Product.find());
+    }
   }
   if (method === "POST") {
     const { title, price, description } = req.body;
@@ -16,4 +20,16 @@ export default async function handler(req, res) {
     });
     res.json(productDoc);
   }
+  if(method === 'PUT'){
+    const { title, price, description , _id } = req.body;
+    await Product.updateOne({_id}, {title , price , description })
+  res.json(true);
+  }
+  
+ if(method === 'DELETE'){
+  if(req.query?.id){
+     await Product.deleteOne({ _id:req.query.id })
+     res.json(true)
+  }
+ }
 }
