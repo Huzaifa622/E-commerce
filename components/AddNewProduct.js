@@ -9,21 +9,37 @@ const AddNewProduct = ({
   title: existingTitle,
   price: existingPrice,
   description: existingDescription,
-  images,
+  images : existingImages
 }) => {
   const router = useRouter();
   const [title, setTitle] = useState(existingTitle || "");
   const [price, setPrice] = useState(existingPrice || "");
   const [description, setDescription] = useState(existingDescription || "");
+  const [images , setImages] = useState(existingImages ||{myFile : ""})
   const [prevPage, setPrevPage] = useState(false);
+  const convertToBase64 = (file) =>{
+    return new Promise((resolve , reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () =>{
+        resolve(fileReader.result)
+      }
+    fileReader.onerror = (error) =>{
+      reject(error)
+    }  
+  })
+}
   const saveProduct = async (e) => {
     e.preventDefault();
-    const data = { title, price, description };
+    console.log(images)
+    const imageArray = Object.values(images)
+    const data = { title, price, description , images : imageArray };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
     } else {
       await axios.post("/api/products", data);
     }
+    setImages({});
     setPrevPage(true);
   };
 
@@ -32,14 +48,14 @@ const AddNewProduct = ({
   }
   const handleImage = async (e) => {
     e.preventDefault();
-    const image = e.target.files[0];
-    const storageRef = ref(storage, "productImages/" + image.name);
-    await uploadBytes(storageRef, image);
-
-    // Get the download URL for the uploaded image
-    const downloadURL = await getDownloadURL(storageRef);
-    // return downloadURL;
-    console.log(downloadURL)
+    try {
+      const image = e.target.files[0];
+      const base64 = await convertToBase64(image);
+      setImages({ ...images, myFile : base64 });
+    } catch (error) {
+      console.error('Error converting image to Base64:', error);
+    }
+    
   };
   return (
     <div className="flex justify-center items-center h-full m-6">
@@ -53,7 +69,7 @@ const AddNewProduct = ({
         />
         <h3>Photos </h3>
         <div>
-          <label className="w-[6rem] h-[6rem] flex justify-center items-center rounded-sm cursor-pointer text-slate-400 bg-slate-300">
+          <label className="hover:scale-90 w-[6rem] h-[6rem] flex justify-center items-center rounded-sm cursor-pointer text-slate-400 bg-slate-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -72,7 +88,7 @@ const AddNewProduct = ({
             <input type="file" className="hidden" onChange={handleImage} />
           </label>
         </div>
-        <div>{!images?.length && <div>No photos</div>}</div>
+        <div>{!existingImages?.length &&<div>No photos</div>}</div>
         <h3>Price</h3>
         <input
           value={price}
