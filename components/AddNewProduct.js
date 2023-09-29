@@ -17,18 +17,6 @@ const AddNewProduct = ({
   const [description, setDescription] = useState(existingDescription || "");
   const [images , setImages] = useState(existingImages ||{myFile : ""})
   const [prevPage, setPrevPage] = useState(false);
-  const convertToBase64 = (file) =>{
-    return new Promise((resolve , reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () =>{
-        resolve(fileReader.result)
-      }
-    fileReader.onerror = (error) =>{
-      reject(error)
-    }  
-  })
-}
   const saveProduct = async (e) => {
     e.preventDefault();
     console.log(images)
@@ -48,13 +36,15 @@ const AddNewProduct = ({
   }
   const handleImage = async (e) => {
     e.preventDefault();
-    try {
-      const image = e.target.files[0];
-      const base64 = await convertToBase64(image);
-      setImages({ ...images, myFile : base64 });
-    } catch (error) {
-      console.error('Error converting image to Base64:', error);
+   const files = e.target?.files;
+   if(files?.length > 0){
+    const data = new FormData();
+    for(const file of files){
+      data.append('file' , file)
     }
+   const res = await axios.post('/api/upload' , data)
+   console.log(res.data)
+   }
     
   };
   return (
