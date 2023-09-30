@@ -9,25 +9,22 @@ const AddNewProduct = ({
   title: existingTitle,
   price: existingPrice,
   description: existingDescription,
-  images : existingImages
+  images: existingImages,
 }) => {
   const router = useRouter();
   const [title, setTitle] = useState(existingTitle || "");
   const [price, setPrice] = useState(existingPrice || "");
   const [description, setDescription] = useState(existingDescription || "");
-  const [images , setImages] = useState(existingImages ||{myFile : ""})
+  const [images, setImages] = useState(existingImages || []);
   const [prevPage, setPrevPage] = useState(false);
   const saveProduct = async (e) => {
     e.preventDefault();
-    console.log(images)
-    const imageArray = Object.values(images)
-    const data = { title, price, description , images : imageArray };
+    const data = { title, price, description, images };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
     } else {
       await axios.post("/api/products", data);
     }
-    setImages({});
     setPrevPage(true);
   };
 
@@ -36,16 +33,20 @@ const AddNewProduct = ({
   }
   const handleImage = async (e) => {
     e.preventDefault();
-   const files = e.target?.files;
-   if(files?.length > 0){
-    const data = new FormData();
-    for(const file of files){
-      data.append('file' , file)
+    const files = e.target?.files;
+    if (files?.length > 0) {
+      const data = new FormData();
+      for (const file of files) {
+        data.append("file", file);
+      }
+      const res = await axios.post("/api/upload", data);
+      setImages((prevImages) => {
+        return [...prevImages, ...res.data.links];
+      });
+      console.log(res.data)
+      console.log(images.length)
+      console.log(images)
     }
-   const res = await axios.post('/api/upload' , data)
-   console.log(res.data)
-   }
-    
   };
   return (
     <div className="flex justify-center items-center h-full m-6">
@@ -59,6 +60,12 @@ const AddNewProduct = ({
         />
         <h3>Photos </h3>
         <div>
+        {!!images?.length && images?.map(link=>(
+          <div key={link}>
+            <img src={link} alt=""/>
+            {link}
+          </div>
+        ))}
           <label className="hover:scale-90 w-[6rem] h-[6rem] flex justify-center items-center rounded-sm cursor-pointer text-slate-400 bg-slate-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +85,7 @@ const AddNewProduct = ({
             <input type="file" className="hidden" onChange={handleImage} />
           </label>
         </div>
-        <div>{!existingImages?.length &&<div>No photos</div>}</div>
+        <div>{!images?.length && <div>No photos</div>}</div>
         <h3>Price</h3>
         <input
           value={price}
