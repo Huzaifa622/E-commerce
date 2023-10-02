@@ -22,17 +22,21 @@ export default async function handler(req, res) {
   const links = [];
   for (const file of files.file) {
     const ext = file.originalFilename.split(".").pop();
-    const newFileName = Date.now()+"."+ ext;
+    const newFileName = Date.now() + "." + ext;
     console.log(ext, file);
+    try {
     client.send(
       new PutObjectCommand({
         Bucket: bucketName,
         Key: newFileName,
         Body: fs.readFileSync(file.path),
-        ACL: "public-read",
+        ACL: 'public-read',
         ContentType: mime.lookup(file.path),
       })
-    );
+    );} catch (error) {
+  console.error("S3 Upload Error:", error);
+  // Handle the error (e.g., return an error response)
+}
     const link = `https://${bucketName}.s3.amazonaws.com/${newFileName}`;
     links.push(link);
   }

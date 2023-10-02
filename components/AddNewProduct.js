@@ -1,7 +1,8 @@
-import Layout from "@/components/Layout";
+// import Layout from "@/components/Layout";
 import { storage } from "@/utils/firebase";
 import axios from "axios";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+// import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 const AddNewProduct = ({
@@ -17,6 +18,7 @@ const AddNewProduct = ({
   const [description, setDescription] = useState(existingDescription || "");
   const [images, setImages] = useState(existingImages || []);
   const [prevPage, setPrevPage] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const saveProduct = async (e) => {
     e.preventDefault();
     const data = { title, price, description, images };
@@ -33,20 +35,34 @@ const AddNewProduct = ({
   }
   const handleImage = async (e) => {
     e.preventDefault();
-    const files = e.target?.files;
-    if (files?.length > 0) {
-      const data = new FormData();
-      for (const file of files) {
-        data.append("file", file);
-      }
-      const res = await axios.post("/api/upload", data);
-      setImages((prevImages) => {
-        return [...prevImages, ...res.data.links];
-      });
-      console.log(res.data)
-      console.log(images.length)
-      console.log(images)
-    }
+    const file = e.target.files[0];
+    // const photo = uploadImage(file)
+    // if (files?.length > 0) {
+    //   const data = new FormData();
+    //   for (const file of files) {
+    //     data.append("file", file);
+    //   }
+    //   const res = await axios.post("/api/upload", data);
+    //   setImages((prevImages) => {
+    //     return [...prevImages, ...res.data.links];
+    //   });
+    //   console.log(res.data)
+    //   console.log(images.length)
+    //   console.log(images)
+    // }
+    
+      setIsLoading(true)
+    const storageRef = ref(storage, "userImages/" + file.name);
+    await uploadBytes(storageRef, file);
+
+    // Get the download URL for the uploaded image
+    const downloadURL = await getDownloadURL(storageRef);
+  //  return downloadURL
+    setImages((prevImages) => {
+          return [...prevImages, downloadURL];
+        });
+      
+      setIsLoading(false)
   };
   return (
     <div className="flex justify-center items-center h-full m-6">
@@ -59,13 +75,16 @@ const AddNewProduct = ({
           onChange={(e) => setTitle(e.target.value)}
         />
         <h3>Photos </h3>
-        <div>
+        <div className="flex gap-2 my-2 flex-wrap">
         {!!images?.length && images?.map(link=>(
-          <div key={link}>
-            <img src={link} alt=""/>
-            {link}
+          <div className="flex h-24"  key={link} >
+            <img className="max-h-full rounded-md" src={link} alt="" />
+            
           </div>
         ))}
+        {loading && (
+          <div>uploading..</div>
+        )}
           <label className="hover:scale-90 w-[6rem] h-[6rem] flex justify-center items-center rounded-sm cursor-pointer text-slate-400 bg-slate-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
