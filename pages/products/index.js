@@ -30,7 +30,7 @@ const Products = () => {
             </tr>
         </thead>
         <tbody className="border ">
-          <td className="border  ">
+          <tr className="border  ">
             {products &&
               products.map((product) => {
                 return (
@@ -52,7 +52,7 @@ const Products = () => {
                       </td>  </tr>
                 );
               })}
-          </td>
+          </tr>
         </tbody>
       </table>
     </Layout>

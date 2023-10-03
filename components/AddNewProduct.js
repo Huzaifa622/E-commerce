@@ -1,10 +1,12 @@
-// import Layout from "@/components/Layout";
+
 import { storage } from "@/utils/firebase";
 import axios from "axios";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-// import Image from "next/image";
+
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { ReactSortable } from "react-sortablejs"; 
+import {  GridLoader } from "react-spinners";
 const AddNewProduct = ({
   _id,
   title: existingTitle,
@@ -64,6 +66,9 @@ const AddNewProduct = ({
       
       setIsLoading(false)
   };
+  const updateImagesOrder = (images) =>{
+setImages(images)
+  }
   return (
     <div className="flex justify-center items-center h-full m-6">
       <form onSubmit={saveProduct} className="w-full flex flex-col">
@@ -76,14 +81,17 @@ const AddNewProduct = ({
         />
         <h3>Photos </h3>
         <div className="flex gap-2 my-2 flex-wrap">
+        <ReactSortable className="flex flex-wrap gap-1" list={images} setList={updateImagesOrder}>
         {!!images?.length && images?.map(link=>(
           <div className="flex h-24"  key={link} >
             <img className="max-h-full rounded-md" src={link} alt="" />
             
           </div>
         ))}
+        </ReactSortable>
         {loading && (
-          <div>uploading..</div>
+          <div className="flex justify-center items-center p-4 "><GridLoader
+          size={10} color="gray"/></div>
         )}
           <label className="hover:scale-90 w-[6rem] h-[6rem] flex justify-center items-center rounded-sm cursor-pointer text-slate-400 bg-slate-300">
             <svg
