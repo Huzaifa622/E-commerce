@@ -23,7 +23,7 @@ const Layout = ({children}) => {
   return (
     <div className="bg-slate-600 min-h-screen flex flex-col">
     <Nav/>
-   <div className='bg-white flex flex-grow flex-col w-screen justify-center'>{children}</div>
+   <div className='bg-white flex flex-grow flex-col w-screen justify-start'>{children}</div>
   </div>
   )
 }

@@ -7,4 +7,4 @@ const productSchema = new Schema({
   images : [{type : String}]
 });
 
-export const Product = models.Product || model("Product", productSchema);
+export const Product = models?.Product || model("Product", productSchema);

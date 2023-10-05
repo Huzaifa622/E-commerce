@@ -11,7 +11,7 @@ const Nav = () => {
   const { pathname } = router;
   return (
     <div className="flex justify-between pl-4 pr-4 pt-2 pb-2">
-      <div className="text-white p-2 flex">
+      <div className="text-white p-2 flex cursor-pointer">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

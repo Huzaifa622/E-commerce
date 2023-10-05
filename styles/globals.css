@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 input ,textarea{
-@apply border border-slate-600 rounded-md mb-4 p-2;
+ @apply border focus:border-slate-600 rounded-md mb-4 p-2   ;
 }
 h1{
     @apply text-2xl;
