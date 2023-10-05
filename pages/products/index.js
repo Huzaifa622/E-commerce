@@ -6,11 +6,14 @@ import { useEffect, useState } from "react";
 const Products = () => {
   const [products, setProducts] = useState();
   useEffect(() => {
-    axios.get("/api/products").then((response) => {
+   fetchProducts();
+  }, []);
+  const fetchProducts = async() =>{
+    await axios.get("/api/products").then((response) => {
       setProducts(response.data);
       console.log(response.data);
     });
-  }, []);
+  }
   return (
     <Layout>
     
