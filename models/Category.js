@@ -1,10 +1,11 @@
 // import { models } from "mongoose";
 
-const { Schema, model,models, default: mongoose } = require("mongoose");
+import mongoose, { Schema, model } from "mongoose";
+import { models } from "mongoose";
 
-const categorySchema = new Schema ({
-    name : {type : String , required : true},
-    parent : {type : mongoose.Types.ObjectId}
-})
+const CategorySchema = new Schema({
+  name: { type: String, required: true },
+  parent: { type: mongoose.Schema.Types.ObjectId , ref: 'Category'},
+});
 
-export const Category = models.Category || model('Category' , categorySchema)
+export const Category = models?.Category || model("Category", CategorySchema);
