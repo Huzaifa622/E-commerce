@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 const categories = () => {
   const [name, setName] = useState("");
+  const [edittedCategory, setEdittedCategory] = useState(null);
   const [categories, setCategories] = useState("");
   const [parentCategory, setParentCategory] = useState("");
   useEffect(() => {
@@ -12,19 +13,44 @@ const categories = () => {
   const handleNewCategory = async (e) => {
     e.preventDefault();
     // console.log(parentCategory)
-    if(parentCategory){
-    await axios.post("/api/categories", { name, parentCategory });
-    setName("");
-    setParentCategory('')
-    fetchCategories();
-    }else{
-      await axios.post("/api/categories", { name});
+    if(edittedCategory){
+      const _id = edittedCategory._id;
+      // console.log(_id)
+      if(parentCategory){
+      await axios.put('/api/categories' , { _id,name , parentCategory }  )
       setName("");
-      setParentCategory('')
+      setParentCategory("");
+      fetchCategories();
+      }else{
+        await axios.put('/api/categories' , { _id,name }  )
+      setName("");
+      setParentCategory("");
+      fetchCategories();
+      }
+    }else{
+    if (parentCategory) {
+      await axios.post("/api/categories", { name, parentCategory });
+      setName("");
+      setParentCategory("");
+      fetchCategories();
+    } else {
+      await axios.post("/api/categories", { name });
+      setName("");
+      setParentCategory("");
       fetchCategories();
     }
+  }
   };
 
+  const editCategory = (category) => {
+    setEdittedCategory(category);
+    setName(category.name);
+    if (category.parent) {
+      setParentCategory(category?.parent._id);
+    } else {
+      setParentCategory("");
+    }
+  };
   const fetchCategories = async () => {
     await axios.get("/api/categories").then((response) => {
       setCategories(response.data);
@@ -35,7 +61,11 @@ const categories = () => {
     <Layout>
       <h1 className="p-4">Categories</h1>
       <div className="flex flex-col justify-start items-start h-full m-6">
-        <h3>Add new Category</h3>
+        <h3>
+          {edittedCategory
+            ? `Edit category ${edittedCategory.name}`
+            : "Add new Category"}
+        </h3>
         <form onSubmit={handleNewCategory} className="w-full flex flex-col">
           <div className="flex justify-between">
             <input
@@ -51,7 +81,7 @@ const categories = () => {
               onChange={(e) => setParentCategory(e.target.value)}
               className="w-[20%] bg-slate-100 "
             >
-              <option value=''>No parent caetgory</option>
+              <option value="">No parent caetgory</option>
 
               {!!categories &&
                 categories.map((category) => (
@@ -79,8 +109,24 @@ const categories = () => {
           {!!categories &&
             categories.map((category) => {
               return (
-                <tr className="border">
-                  <td>{category.name}</td>
+                <tr className="border flex justify-between items-center">
+                  <tr>
+                    <td>{category.name}</td>
+                  </tr>
+                  <tr>
+                    <td>{category?.parent?.name}</td>
+                  </tr>
+                  <tr className="flex justify-between m-2 w-[10rem]">
+                    <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
+                      {" "}
+                      <button onClick={() => editCategory(category)}>
+                        edit
+                      </button>
+                    </td>
+                    <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
+                      <button onClick={""}>delete</button>
+                    </td>
+                  </tr>
                 </tr>
               );
             })}

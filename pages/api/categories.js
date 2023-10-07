@@ -10,7 +10,13 @@ if(method === 'POST'){
    res.json(cat)
 }
 if(method === 'GET'){
-    const resCat = await Category.find();
+    const resCat = await Category.find().populate('parent');
     res.json(resCat)
+}
+if(method === 'PUT'){
+    const {name , parentCategory , _id} = req.body;
+    console.log(_id)
+    const putCat = await Category.updateOne({_id} , {name , parent : parentCategory})
+    res.json(putCat)
 }
 }
