@@ -12,18 +12,20 @@ export default async function handler(req, res) {
     }
   }
   if (method === "POST") {
-    const { title, price, description, images } = req.body;
+    const { title, price, description, parentCategory,images } = req.body;
     const productDoc = await Product.create({
       title,
       price,
       description,
+      category:parentCategory,
       images,
     });
     res.json(productDoc);
   }
   if (method === "PUT") {
-    const { title, price, description, _id, images } = req.body;
-    await Product.updateOne({ _id }, { title, price, description, images });
+    const { title, price, description, _id, images , parentCategory } = req.body;
+    console.log(req.body)
+    await Product.updateOne({ _id }, { title, price, description, category:parentCategory ,images });
     res.json(true);
   }
 

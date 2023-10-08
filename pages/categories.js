@@ -1,10 +1,12 @@
 import Layout from "@/components/Layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import swal from "sweetalert";
 
 const categories = () => {
   const [name, setName] = useState("");
   const [edittedCategory, setEdittedCategory] = useState(null);
+
   const [categories, setCategories] = useState("");
   const [parentCategory, setParentCategory] = useState("");
   useEffect(() => {
@@ -20,11 +22,13 @@ const categories = () => {
       await axios.put('/api/categories' , { _id,name , parentCategory }  )
       setName("");
       setParentCategory("");
+      setEdittedCategory(null)
       fetchCategories();
       }else{
         await axios.put('/api/categories' , { _id,name }  )
       setName("");
       setParentCategory("");
+      setEdittedCategory(null)
       fetchCategories();
       }
     }else{
@@ -39,7 +43,7 @@ const categories = () => {
       setParentCategory("");
       fetchCategories();
     }
-  }
+    }
   };
 
   const editCategory = (category) => {
@@ -51,6 +55,26 @@ const categories = () => {
       setParentCategory("");
     }
   };
+
+  const deleteCategory = (category) =>{
+    swal({
+      title: "Are you sure?",
+      icon: "warning",
+      text: `Are you sure that you want to Delete ${category.name}?`,
+      buttons:[ 'Cancel','Yes Delete!!'],
+    }).then(async (result) => {
+      console.log(result)
+      if(result){
+        
+        const {_id} = category;
+       await axios.delete('/api/categories?_id=' + _id);
+       swal("Category has been deleted!", {
+        icon: "success",
+      });
+       fetchCategories();
+      }
+    })
+  }
   const fetchCategories = async () => {
     await axios.get("/api/categories").then((response) => {
       setCategories(response.data);
@@ -124,7 +148,7 @@ const categories = () => {
                       </button>
                     </td>
                     <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
-                      <button onClick={""}>delete</button>
+                      <button onClick={()=>deleteCategory(category)}>delete</button>
                     </td>
                   </tr>
                 </tr>

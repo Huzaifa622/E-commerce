@@ -15,8 +15,14 @@ if(method === 'GET'){
 }
 if(method === 'PUT'){
     const {name , parentCategory , _id} = req.body;
-    console.log(_id)
+    // console.log(_id)
     const putCat = await Category.updateOne({_id} , {name , parent : parentCategory})
     res.json(putCat)
+}
+if(method === 'DELETE'){
+    const {_id} = req.query;
+    console.log(_id)
+     await Category.deleteOne({_id})
+     res.json(true)
 }
 }
