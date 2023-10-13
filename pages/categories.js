@@ -16,45 +16,35 @@ const categories = () => {
   const handleNewCategory = async (e) => {
     e.preventDefault();
     // console.log(parentCategory)
+    const data = {
+      name,
+      parentCategory,
+      properties: properties.map((p) => ({
+        name: p.name,
+        values: p.values.split(","),
+      })),
+    };
     if (edittedCategory) {
-      const _id = edittedCategory._id;
+      data._id = edittedCategory._id;
       // console.log(_id)
-      if (parentCategory) {
-        await axios.put("/api/categories", { _id, name, parentCategory });
-        setName("");
-        setParentCategory("");
-        setEdittedCategory(null);
-        fetchCategories();
-      } else {
-        await axios.put("/api/categories", { _id, name });
-        setName("");
-        setParentCategory("");
-        setEdittedCategory(null);
-        fetchCategories();
-      }
+
+      await axios.put("/api/categories", data);
+
+      setEdittedCategory(null);
     } else {
-      if (parentCategory) {
-        await axios.post("/api/categories", { name, parentCategory });
-        setName("");
-        setParentCategory("");
-        fetchCategories();
-      } else {
-        await axios.post("/api/categories", { name });
-        setName("");
-        setParentCategory("");
-        fetchCategories();
-      }
+      await axios.post("/api/categories", data);
     }
+    setProperties([]);
+    setName("");
+    setParentCategory("");
+    fetchCategories();
   };
 
   const editCategory = (category) => {
     setEdittedCategory(category);
     setName(category.name);
-    if (category.parent) {
       setParentCategory(category?.parent._id);
-    } else {
-      setParentCategory("");
-    }
+    setProperties(category.properties.map(({name , values})=>({name , values: values.join(",")})))
   };
 
   const deleteCategory = (category) => {
@@ -84,30 +74,29 @@ const categories = () => {
   const setProperty = () => {
     setProperties((prev) => [...prev, { name: "", values: "" }]);
   };
-  const handlePropertyNameChange = (index , property , newName) =>{
+  const handlePropertyNameChange = (index, property, newName) => {
     // console.log(index , property , newName)
-    setProperties((prev)=>{
-      const properties = [...prev]
+    setProperties((prev) => {
+      const properties = [...prev];
       properties[index].name = newName;
       return properties;
-    })
-  }
-  const handlePropertyValueChange = (index , property , newValue) =>{
+    });
+  };
+  const handlePropertyValueChange = (index, property, newValue) => {
     // console.log(index , property , newName)
-    setProperties((prev)=>{
-      const properties = [...prev]
+    setProperties((prev) => {
+      const properties = [...prev];
       properties[index].values = newValue;
       return properties;
-    })
-  }
-  const removeProperty = (indexToRemove) =>{
-   setProperties((prev)=>{
-    return [...prev].filter((p,pIndex)=>{
-      return pIndex !== indexToRemove;
-    })
-    
-   })
-  }
+    });
+  };
+  const removeProperty = (indexToRemove) => {
+    setProperties((prev) => {
+      return [...prev].filter((p, pIndex) => {
+        return pIndex !== indexToRemove;
+      });
+    });
+  };
   return (
     <Layout>
       <h1 className="p-4">Categories</h1>
@@ -150,36 +139,51 @@ const categories = () => {
               Add Property
             </button>
             {properties &&
-              properties.map((property , index) => (
+              properties.map((property, index) => (
                 <div className="mt-2 flex gap-2 w-full">
                   <input
                     className="w-[40%]"
                     type="text"
                     value={property.name}
                     placeholder="property name"
-                    onChange={e => handlePropertyNameChange(index , property , e.target.value)}
+                    onChange={(e) =>
+                      handlePropertyNameChange(index, property, e.target.value)
+                    }
                   ></input>
                   <input
                     className="w-[40%]"
                     type="text"
                     value={property.values}
                     placeholder="property value"
-                    onChange={e => handlePropertyValueChange(index , property , e.target.value)}
+                    onChange={(e) =>
+                      handlePropertyValueChange(index, property, e.target.value)
+                    }
                   ></input>
-                  <button type="button" onClick={()=>removeProperty(index)} className="bg-slate-400 w-52 h-10 rounded-lg text-white">
+                  <button
+                    type="button"
+                    onClick={() => removeProperty(index)}
+                    className="bg-slate-400 w-52 h-10 rounded-lg text-white"
+                  >
                     Remove
                   </button>
                 </div>
               ))}
           </div>
           {edittedCategory && (
-            <div className="flex gap-2">
-          <button type="button" className="bg-slate-400 w-52 h-10 rounded-lg text-white" onClick={()=> 
-          {setEdittedCategory(null); 
-          setName('');
-          setParentCategory('')
-        }}>Cancel</button>
-          </div>
+            <div className="mb-2">
+              <button
+                type="button"
+                className="bg-slate-400 w-52 h-10 rounded-lg text-white"
+                onClick={() => {
+                  setEdittedCategory(null);
+                  setName("");
+                  setParentCategory("");
+                  setProperties([])
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           )}
           <button
             type="submit"
@@ -190,45 +194,44 @@ const categories = () => {
         </form>
       </div>
       {!edittedCategory && (
- <table className="border m-12 overflow-hidden">
- <thead className="border">
-   <tr>
-     <td className="p-4 text-white bg-slate-600 pb-4 rounded-lg">
-       <h1>Category Name</h1>
-     </td>
-   </tr>
- </thead>
- <tbody>
-   {!!categories &&
-     categories.map((category) => {
-       return (
-         <tr className="border flex justify-between items-center">
-           <tr>
-             <td>{category.name}</td>
-           </tr>
-           <tr>
-             <td>{category?.parent?.name}</td>
-           </tr>
-           <tr className="flex justify-between m-2 w-[10rem]">
-             <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
-               {" "}
-               <button onClick={() => editCategory(category)}>
-                 edit
-               </button>
-             </td>
-             <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
-               <button onClick={() => deleteCategory(category)}>
-                 delete
-               </button>
-             </td>
-           </tr>
-         </tr>
-       );
-     })}
- </tbody>
-</table>
+        <table className="border m-12 overflow-hidden">
+          <thead className="border">
+            <tr>
+              <td className="p-4 text-white bg-slate-600 pb-4 rounded-lg">
+                <h1>Category Name</h1>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            {!!categories &&
+              categories.map((category) => {
+                return (
+                  <tr className="border flex justify-between items-center">
+                    <tr>
+                      <td>{category.name}</td>
+                    </tr>
+                    <tr>
+                      <td>{category?.parent?.name}</td>
+                    </tr>
+                    <tr className="flex justify-between m-2 w-[10rem]">
+                      <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
+                        {" "}
+                        <button onClick={() => editCategory(category)}>
+                          edit
+                        </button>
+                      </td>
+                      <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
+                        <button onClick={() => deleteCategory(category)}>
+                          delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
       )}
-     
     </Layout>
   );
 };
