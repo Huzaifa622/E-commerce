@@ -43,7 +43,7 @@ const categories = () => {
   const editCategory = (category) => {
     setEdittedCategory(category);
     setName(category.name);
-      setParentCategory(category?.parent._id);
+      setParentCategory(category?.parent?._id);
     setProperties(category.properties.map(({name , values})=>({name , values: values.join(",")})))
   };
 
@@ -97,6 +97,8 @@ const categories = () => {
       });
     });
   };
+
+
   return (
     <Layout>
       <h1 className="p-4">Categories</h1>
@@ -128,6 +130,7 @@ const categories = () => {
                   <option value={category._id}>{category.name}</option>
                 ))}
             </select>
+            {/* {!!categories && } */}
           </div>
           <div className="mb-2">
             <h3 className="">Properties</h3>

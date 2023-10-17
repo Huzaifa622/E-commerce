@@ -12,25 +12,31 @@ const AddNewProduct = ({
   title: existingTitle,
   price: existingPrice,
   description: existingDescription,
-  category : existingCategory,
+  category: existingCategory,
   images: existingImages,
+  properties : existingProperties
 }) => {
   const router = useRouter();
   const [title, setTitle] = useState(existingTitle || "");
   const [price, setPrice] = useState(existingPrice || "");
   const [description, setDescription] = useState(existingDescription || "");
   const [images, setImages] = useState(existingImages || []);
-  const [categories, setCategories] = useState("");
-  const [parentCategory, setParentCategory] = useState(existingCategory ||"");
+  const [categories, setCategories] = useState([]);
+  const [productProperties, setProductProperties] = useState( existingProperties||{});
+  const [category, setCategory] = useState(existingCategory || "");
   const [prevPage, setPrevPage] = useState(false);
   const [loading, setIsLoading] = useState(false);
   useEffect(() => {
-    fetchCategories();
+     axios.get("/api/categories").then((response) => {
+      setCategories(response.data);
+      console.log(response.data)
+    
+    })
   }, []);
   const saveProduct = async (e) => {
     e.preventDefault();
-    const data = { title, price, description, parentCategory ,images };
-    console.log(data)
+    const data = { title, price, description, category, images , properties:productProperties };
+    console.log(data);
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
     } else {
@@ -77,11 +83,32 @@ const AddNewProduct = ({
     setImages(images);
   };
 
-  const fetchCategories = async () => {
-  await axios.get("/api/categories").then((response) => {
-      setCategories(response.data);
-    });
-  };
+  // const fetchCategories = async () => {
+  //   await axios.get("/api/categories").then((response) => {
+  //     setCategories(response.data);
+  //   });
+  // };
+ const setProductProp = (prodName , value) =>{
+ setProductProperties(prev =>{
+  const newProductProperties = {...prev};
+  newProductProperties[prodName] = value;
+  return newProductProperties
+ })
+ }
+  const fillProperty = [];
+  if (!!categories && category) {
+    let catInfo = categories.find(({ _id }) => _id === category);
+    console.log(catInfo?.parent)
+      if(catInfo && catInfo.properties){
+
+        fillProperty.push(...catInfo?.properties);
+      }
+    while(catInfo?.parent?._id){
+      const parentCat = categories.find(({_id})=>(_id === catInfo?.parent?._id))
+      fillProperty.push(...parentCat?.properties)
+      catInfo = parentCat;
+    }
+  }
   return (
     <div className="flex justify-center items-center h-full m-6">
       <form onSubmit={saveProduct} className="w-full flex flex-col">
@@ -93,17 +120,25 @@ const AddNewProduct = ({
           onChange={(e) => setTitle(e.target.value)}
         />
         <h3>Category</h3>
-        <select
-          value={parentCategory}
-          onChange={(e) => setParentCategory(e.target.value)}
-        >
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value={""}>Uncategorized</option>
           {!!categories &&
             categories.map((category) => (
               <option value={category._id}>{category.name}</option>
             ))}
         </select>
+        {!!fillProperty && fillProperty.map((p) => (
+    <div className="flex gap-1 ">   
+     <div>{p.name}</div>
+        <select
+        value={productProperties[p.name]}
+        onChange={(e)=>setProductProp(p.name , e.target.value)}>
+          {p.values.map((v)=>(
+            <option  value={v}>{v}</option>
 
+          ))}
+        </select>
+        </div>        ))}
         <h3>Photos </h3>
         <div className="flex gap-2 my-2 flex-wrap">
           <ReactSortable
