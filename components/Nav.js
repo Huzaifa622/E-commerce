@@ -9,6 +9,10 @@ const Nav = () => {
   const active = "text-slate-600 bg-white p-2 ml-2 mr-2 rounded-lg";
   const inactive = "p-2 ml-2 mr-2 text-white";
   const { pathname } = router;
+  const logout = async() =>{
+    await router.push('/')
+    await signOut('google');
+  }
   return (
     <div className="flex justify-between pl-4 pr-4 pt-2 pb-2">
       <div className="text-white p-2 flex cursor-pointer">
@@ -117,30 +121,11 @@ const Nav = () => {
           </svg>
         </Link>
 
-        <Link
-          className={router.pathname.includes("/settings") ? active : inactive}
-          href={"/settings.js"}
-        >
-          <svg
-            data-tooltip-id="setting"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
-            />
-          </svg>
-        </Link>
+       
       </div>
 
       <div
-        onClick={() => signOut("google")}
+        onClick={() => logout()}
         className={`${inactive} cursor-pointer`}
       >
         <svg
@@ -163,7 +148,7 @@ const Nav = () => {
       <Tooltip id="products" place="bottom" content="Products" />
       <Tooltip id="categories" place="bottom" content="Categories" />
       <Tooltip id="orders" place="bottom" content="Orders" />
-      <Tooltip id="setting" place="bottom" content="Settings" />
+      {/* <Tooltip id="setting" place="bottom" content="Settings" /> */}
       <Tooltip id="logout" place="bottom" content="Log Out" />
     </div>
   );
