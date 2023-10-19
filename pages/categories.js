@@ -135,7 +135,7 @@ const categories = () => {
           <div className="mb-2">
             <h3 className="">Properties</h3>
             <button
-              className="bg-slate-400 w-52 h-10 rounded-lg text-white"
+              className="bg-violet-400 w-52 h-10 rounded-lg text-white"
               type="button"
               onClick={setProperty}
             >
@@ -165,7 +165,7 @@ const categories = () => {
                   <button
                     type="button"
                     onClick={() => removeProperty(index)}
-                    className="bg-slate-400 w-52 h-10 rounded-lg text-white"
+                    className="bg-violet-400 w-52 h-10 rounded-lg text-white"
                   >
                     Remove
                   </button>
@@ -176,7 +176,7 @@ const categories = () => {
             <div className="mb-2">
               <button
                 type="button"
-                className="bg-slate-400 w-52 h-10 rounded-lg text-white"
+                className="bg-violet-400 w-52 h-10 rounded-lg text-white"
                 onClick={() => {
                   setEdittedCategory(null);
                   setName("");
@@ -190,7 +190,7 @@ const categories = () => {
           )}
           <button
             type="submit"
-            className="bg-slate-600 w-52 h-10 rounded-lg text-white"
+            className="bg-violet-700 w-52 h-10 rounded-lg text-white"
           >
             Save
           </button>
@@ -200,7 +200,7 @@ const categories = () => {
         <table className="border m-12 overflow-hidden">
           <thead className="border">
             <tr>
-              <td className="p-4 text-white bg-slate-600 pb-4 rounded-lg">
+              <td className="p-4 text-white bg-violet-700 pb-4 rounded-lg">
                 <h1>Category Name</h1>
               </td>
             </tr>
@@ -217,13 +217,13 @@ const categories = () => {
                       <td>{category?.parent?.name}</td>
                     </tr>
                     <tr className="flex justify-between m-2 w-[10rem]">
-                      <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
+                      <td className="text-white bg-violet-700 p-3 py-1 mx-2 rounded-lg">
                         {" "}
                         <button onClick={() => editCategory(category)}>
                           edit
                         </button>
                       </td>
-                      <td className="text-white bg-slate-600 p-3 py-1 mx-2 rounded-lg">
+                      <td className="text-white bg-violet-700 p-3 py-1 mx-2 rounded-lg">
                         <button onClick={() => deleteCategory(category)}>
                           delete
                         </button>
