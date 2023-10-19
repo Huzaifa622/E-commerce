@@ -8,11 +8,11 @@ const Layout = ({children}) => {
     console.log(session)
     if (!session) {
       return (
-        <div className="bg-slate-600 w-screen h-screen flex items-center">
+        <div className="bg-violet-600 w-screen h-screen flex items-center">
           <div className="w-full text-center">
             <button
               onClick={async() => await signIn("google")}
-              className="bg-slate-50 rounded-full p-2 " 
+              className="bg-violet-400 text-white hover:bg-violet-800 rounded-full p-2 " 
             >
               Sign in with google
             </button>
