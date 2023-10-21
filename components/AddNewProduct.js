@@ -35,6 +35,7 @@ const AddNewProduct = ({
   }, []);
   const saveProduct = async (e) => {
     e.preventDefault();
+    console.log(category)
     const data = { title, price, description, category, images , properties:productProperties };
     console.log(data);
     if (_id) {
@@ -121,10 +122,10 @@ const AddNewProduct = ({
         />
         <h3>Category</h3>
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value={""}>Uncategorized</option>
+          <option value="">Uncategorized</option>
           {!!categories &&
-            categories.map((category) => (
-              <option value={category._id}>{category.name}</option>
+            categories.map((c) => (
+              <option key={c._id} value={c._id}>{c.name}</option>
             ))}
         </select>
         {!!fillProperty && fillProperty.map((p) => (
