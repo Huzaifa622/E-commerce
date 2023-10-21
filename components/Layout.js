@@ -21,9 +21,9 @@ const Layout = ({children}) => {
       );
     }
   return (
-    <div className="bg-violet-700 min-h-screen flex flex-col overflow-x-hidden text-base">
+    <div className="bg-violet-600 min-h-screen flex flex-col overflow-x-hidden text-base">
     <Nav/>
-   <div className='bg-violet-100 flex flex-grow flex-col w-screen justify-start'>{children}</div>
+   <div className='bg-violet-50 flex flex-grow flex-col w-screen justify-start'>{children}</div>
   </div>
   )
 }

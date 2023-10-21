@@ -1,9 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
 
 input ,textarea , select{
- @apply border focus:border-slate-600 rounded-md mb-4 p-2   ;
+ @apply border focus:border-violet-600 rounded-sm mb-4 p-2   ;
 }
 h1{
     @apply text-2xl;
@@ -11,4 +12,8 @@ h1{
 
 h3{
     @apply text-xl mb-2
+}
+body{
+    font-family: 'Anton', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }

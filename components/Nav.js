@@ -18,8 +18,8 @@ const Nav = () => {
     await signOut("google");
   };
   return (
-    <div className=" justify-between px-4 py-2 mx-3 flex ">
-      <div className="text-white p-2 flex cursor-pointer">
+    <div className=" justify-between px-4 py-2 mx-3 flex z-10 ">
+      <div className="text-white p-2 flex cursor-pointer items-center justify-center text-center">
         <span className="pr-3 md:hidden" onClick={()=>setNav(!nav )}>{nav ?<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 </svg>
