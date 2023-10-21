@@ -192,7 +192,7 @@ const AddNewProduct = ({
           onChange={(e) => setDescription(e.target.value)}
         />
         <button
-          className="bg-slate-600 w-52 h-10 rounded-lg text-white"
+          className="bg-violet-300 hover:bg-violet-400 drop-shadow-lg w-44  text-violet-700 p-3 rounded-sm"
           type="submit"
         >
           Save
