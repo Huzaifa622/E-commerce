@@ -36,7 +36,7 @@ const AddNewProduct = ({
   const saveProduct = async (e) => {
     e.preventDefault();
     console.log(category)
-    const data = { title, price, description, category, images , properties:productProperties };
+    const data = { title, price, description, category:category||null, images , properties:productProperties };
     console.log(data);
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
