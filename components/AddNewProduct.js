@@ -149,7 +149,7 @@ const AddNewProduct = ({
           >
             {!!images?.length &&
               images?.map((link) => (
-                <div className="flex h-24" key={link}>
+                <div className="flex h-24 bg-white rounded-sm" key={link}>
                   <img className="max-h-full rounded-md" src={link} alt="" />
                 </div>
               ))}
